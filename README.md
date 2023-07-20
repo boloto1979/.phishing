@@ -20,7 +20,7 @@ You must use Python 3.9 or higher
 $ git clone https://github.com/phishing-project/.phishing
 
 # install the requirements
-$ python3 -m pip install -r requirements.txt
+$ pip install -r requirements.txt
 
 # change the working directory to p.phishing
 $ cd p.phishing
@@ -30,7 +30,7 @@ $ cd p.phishing
 ## Start
 
 ```console
-$ python3 .phishing.py
+$ python3 p.phishing.py
 ```
 
 ## Disclaimer
