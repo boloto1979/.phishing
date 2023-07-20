@@ -2,7 +2,7 @@
   <br>
   <a href="" target="_blank"><img src="./images/logo.png"/></a>
   <br>
-  <span>Compiler that aggregates a variety of login screens for your phishing. All liability and protection of using this program are the sole responsibility of the user.</span>
+  <span>Compiler that aggregates a variety of login screens for your phishing.</span>
   <br>
 </p>
 
