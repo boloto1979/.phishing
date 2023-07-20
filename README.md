@@ -6,11 +6,16 @@
   <br>
 </p>
 
-You must use Python 3.9 or higher
+<br>
+<p align=center><span>ongoing project</span></p>
+<br>
+
 
 ## Installation
 
 ```console
+You must use Python 3.9 or higher
+
 # clone the repo
 $ git clone https://github.com/phishing-project/.phishing
 
