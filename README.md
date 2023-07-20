@@ -12,8 +12,8 @@
 # clone the repo
 $ git clone https://github.com/phishing-project/.phishing
 
-# change the working directory to p.phishing
-$ cd p.phishing
-
 # install the requirements
 $ python3 -m pip install -r requirements.txt
+
+# change the working directory to p.phishing
+$ cd p.phishing
