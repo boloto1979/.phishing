@@ -2,12 +2,12 @@
   <br>
   <a href="" target="_blank"><img src="./images/logo.png"/></a>
   <br>
-  <span>Compiler that aggregates a variety of login screens for your phishing.</span>
+  <span>An automated phishing tool.</span>
   <br>
 </p>
 
 <br>
-<p align=center><span>ongoing project</span></p>
+<p align=center><span>ongoing project...</span></p>
 <br>
 
 
@@ -24,8 +24,9 @@ $ pip install -r requirements.txt
 
 # change the working directory to p.phishing
 $ cd p.phishing
-```
 
+this tool uses ngrok to work, make sure it is installed!
+```
 
 ## Start
 

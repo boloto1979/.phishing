@@ -1,4 +1,1 @@
 colorama
-requests
-beautifulsoup4
-Flask
