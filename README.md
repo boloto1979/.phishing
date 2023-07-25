@@ -25,13 +25,15 @@ $ pip install -r requirements.txt
 # change the working directory to p.phishing
 $ cd p.phishing
 
-this tool uses ngrok to work, make sure it is installed!
+this tool uses ngrok, so register on the site and use your token to use this tool!
 ```
 
 ## Start
 
 ```console
 $ python3 p.phishing.py
+
+When starting the tool, please input your ngrok token.
 ```
 
 ## Disclaimer
