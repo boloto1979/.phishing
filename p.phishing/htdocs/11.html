@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch - Login</title>
+    <style>
+        *
+{
+  box-sizing: border-box;
+}
+
+body
+{
+  padding: 0;
+  margin: 0;
+  background-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp2822826.jpg&f=1&nofb=1&ipt=18b05da74bd71ce7fbc40a722d0870ff58d01d3f9f21e0e6142d2c8d85771f44&ipo=images");
+  background-size: cover;
+  font-family: Helvetica;
+}
+
+#app
+{
+  max-width: 500px;
+  margin: 2em auto;
+  background-color: #fff;
+  padding: 1em;
+  border-radius: 10px;
+}
+
+h1
+{
+  font-size: 1.2em;
+  text-align: center;
+}
+
+.alert
+{
+  background-color: #EFEEF1;
+  border: 1px solid #E91C24;
+  border-radius: 5px;
+  border-left-width: 5px;
+  padding: 1em;
+}
+
+.nav--login
+{
+  padding: 0.3em;
+}
+
+.nav--login a
+{
+  color: #A291C4;
+  text-decoration: none;
+  margin-right: 1em;
+}
+
+.form
+{
+  padding: 0.5em;
+}
+
+.form label
+{
+  display: block;
+  margin-top: 0.5em;
+}
+
+.form input
+{
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.btn
+{
+  margin: 1em 0;
+  background-color: #F4F4F4;
+  color: #B0ADB5;
+  text-align: center;
+  display: block;
+  padding: 0.5em;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.nav--login
+{
+  border-bottom: 2px solid #A291C4;
+  margin-bottom: 1em;
+}
+
+.nav
+{
+  background-color: #4B387A;
+  padding: 0.6em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 6em;
+}
+
+.nav a
+{
+  margin: 0 1em;
+  text-decoration: none;
+}
+
+a.loggedIn
+{
+  flex: 0 1 240px;
+  margin-left: auto;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
+
+.user--avatar
+{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  grid-column: 1 / 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+.user--name
+{
+  margin: 0;
+}
+
+.user--avatar img
+{
+  object-fit: cover;
+  object-position: center;
+  width: 50px;
+}
+
+.nav a
+{
+  color: #B4C4E7;
+}
+
+.nav a:hover
+{
+  color: #fff;
+}
+
+.hidden
+{
+  display: none;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav">
+          <a href="?page=browser">Browse</a>
+          <a href="?page=getdesktop">Get desktop</a>
+          <a href="?page=tryprime">Try prime</a>
+          <a href="#" class="loggedIn">
+          </a>
+          <a href="logout">Log out?</a>
+        </nav>
+      </header>
+      
+      <form method="post">
+      <div id="app">
+        <h1>Log in to Twitch</h1>
+        <nav class="nav--login">
+          <a href="#" id="tabLogin">Log in</a>
+        </nav>
+      
+        <div class="alert hidden">That password was incorrect. Please try again</div>
+      
+        <div class="form form--login">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="email">
+      
+          <label for="password">Password</label>
+          <input type="password" id="password" name="pass">
+        </div>
+      
+        <div class="form form--signup hidden">
+          <label for="username2">Username</label>
+          <input type="text" id="username2" name="email">>
+      
+          <label for="password2">Password</label>
+          <input type="password" id="password2" name="pass">>
+      
+          <label for="email">Email</label>
+          <input type="text" id="email" name="email">>
+        </div>
+      
+        <button href="#" class="btn">Log In</button>
+      </div>
+    </form>
+</body>
+</html>
