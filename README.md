@@ -6,11 +6,6 @@
   <br>
 </p>
 
-<br>
-<p align=center><span>ongoing project...</span></p>
-<br>
-
-
 ## Installation
 
 ```console
